@@ -1,18 +1,37 @@
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
+import WorkoutDetails from "../components/WorkoutDetails"
+import WorkoutForm from "../components/WorkoutForm";
+import {useWorkoutsContext} from '../hooks/useWorkoutsContext.jsx'
 
 
 const HomePage = () => {
-  useEffect(() => { async () => {
-      const response = await fetch("http://localhost:5000/api/posts")
+  const {workouts, dispatch} = useWorkoutsContext();
+
+  useEffect(() => { 
+    const fetchWorkouts = async () => {
+      const response = await fetch('http://localhost:4000/api/workouts');
       const data = await response.json()
+
+      if (response.ok) {
+        dispatch({type:'SET_WORKOUTS', payload: data})
+      }
+
       console.log(data)
     }
-  }, [])
 
+    fetchWorkouts()
+    
+  }, [dispatch])
+    console.log(workouts)
   return (
     <>
       <div className="home">
-        <h2>Welcome to the MERN Stack Blog</h2>
+        <div className="workouts">
+          {workouts && workouts.map(workout => (
+            <WorkoutDetails workout={workout} key={workout._id} />
+          ))}
+        </div>
+        <WorkoutForm />
       </div>
     </>
   )
