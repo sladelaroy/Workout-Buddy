@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { useAuthContext } from './hooks/useAuthContext.jsx'
 
 import Navbar from './components/Navbar.jsx'
 import HomePage from './pages/HomePage.jsx'
@@ -9,6 +10,7 @@ import './index.css'
 
 function App() {
   const [count, setCount] = useState(0)
+  const {user} = useAuthContext();
 
   return (
     <>
@@ -17,10 +19,10 @@ function App() {
           <Navbar />
           <div className="pages">
             <Routes>
-              <Route path="/" element={<HomePage />} />
+              <Route path="/" element={user ? <HomePage /> : <Navigate to='/login' />} />
               <Route path="/about" element={<h1>About</h1>} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/signup" element={<Signup />} />
+              <Route path="/login" element={!user ? <Login /> : <Navigate to='/' />} />
+              <Route path="/signup" element={!user ? <Signup /> : <Navigate to='/' />} />
             </Routes>
           </div>
         </BrowserRouter>
