@@ -1,6 +1,7 @@
 import {useState} from 'react'
 import {useWorkoutsContext} from '../hooks/useWorkoutsContext.jsx'
 import { useAuthContext } from '../hooks/useAuthContext.jsx';
+import {backendUrl} from '../App.jsx'
 
 const WorkoutForm = () => {
   const {dispatch} = useWorkoutsContext();
@@ -24,7 +25,7 @@ const WorkoutForm = () => {
       reps
     }
 
-    const response = await fetch('http://localhost:4000/api/workouts', {
+    const response = await fetch(`${backendUrl}/api/workouts`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

@@ -8,9 +8,10 @@ import Login from './pages/Login.jsx'
 import Signup from './pages/Signup.jsx'
 import './index.css'
 
+export const backendUrl = import.meta.env.VITE_BACKEND_URL
 function App() {
-  const [count, setCount] = useState(0)
   const {user} = useAuthContext();
+  
 
   return (
     <>
