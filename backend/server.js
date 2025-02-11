@@ -16,7 +16,9 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(cors());
+app.use(cors({
+  origin: 'https://workout-buddy-azure.vercel.app'  
+}));
 
 app.use('/api/workouts', workoutRoutes)
 app.use('/api/users', userRoutes)
