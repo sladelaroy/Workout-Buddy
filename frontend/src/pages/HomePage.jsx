@@ -1,47 +1,52 @@
-import { useEffect } from "react"
-import WorkoutDetails from "../components/WorkoutDetails"
+import { useEffect } from "react";
+import WorkoutDetails from "../components/WorkoutDetails";
 import WorkoutForm from "../components/WorkoutForm";
-import {useWorkoutsContext} from '../hooks/useWorkoutsContext.jsx'
+import { useWorkoutsContext } from "../hooks/useWorkoutsContext.jsx";
 import { useAuthContext } from "../hooks/useAuthContext.jsx";
-import {backendUrl} from '../App.jsx'
+import { backendUrl } from "../App.jsx";
+import axios from "axios";
 const HomePage = () => {
-  const {workouts, dispatch} = useWorkoutsContext();
-  const {user} = useAuthContext();
+  const { workouts, dispatch } = useWorkoutsContext();
+  const { user } = useAuthContext();
 
-  useEffect(() => { 
+  useEffect(() => {
     const fetchWorkouts = async () => {
-      const response = await fetch(`${backendUrl}/api/workouts`, {
-        headers: {
-          'Authorization': `Bearer ${user.token}`
-        }
-      });
-      const data = await response.json()
+      try {
+        const response = await axios.get(`${backendUrl}/api/workouts`, {
+          headers: {
+            Authorization: `Bearer ${user.token}`
+          }
+        });
 
-      if (response.ok) {
-        dispatch({type:'SET_WORKOUTS', payload: data})
+        dispatch({ type: "SET_WORKOUTS", payload: response.data });
+
+        console.log(response.data);
+      } catch (error) {
+        console.error(
+          "Error fetching workouts:",
+          error.response?.data || error.message
+        );
       }
-
-      console.log(data)
-    }
+    };
 
     if (user) {
-      fetchWorkouts() 
+      fetchWorkouts();
     }
-    
-  }, [dispatch, user])
-    console.log(workouts)
+  }, [dispatch, user]);
+  console.log(workouts);
   return (
     <>
       <div className="home">
         <div className="workouts">
-          {workouts && workouts.map(workout => (
-            <WorkoutDetails workout={workout} key={workout._id} />
-          ))}
+          {workouts &&
+            workouts.map((workout) => (
+              <WorkoutDetails workout={workout} key={workout._id} />
+            ))}
         </div>
         <WorkoutForm />
       </div>
     </>
-  )
-}
+  );
+};
 
-export default HomePage
+export default HomePage;
