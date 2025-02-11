@@ -16,9 +16,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(cors({
-  origin: 'http://localhost:3000'  
-}));
+app.use(cors());
 
 app.use('/api/workouts', workoutRoutes)
 app.use('/api/users', userRoutes)
