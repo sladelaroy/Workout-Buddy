@@ -32,6 +32,10 @@ app.use((req, res, next) => {
 app.use('/api/workouts', workoutRoutes);
 app.use('/api/users', userRoutes);
 
+app.get('/', (req, res) => {
+  res.send('<h1>Server is working! 🎉</h1>');
+});
+
 // ✅ Global error handler (prevents crashes without CORS headers)
 app.use((err, req, res, next) => {
   console.error(err.stack);
