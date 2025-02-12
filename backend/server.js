@@ -40,6 +40,8 @@ app.use((err, req, res, next) => {
   res.status(500).json({ message: "Server Error" });
 });
 
+app.options("*", cors());
+
 // ✅ Start server
 app.listen(process.env.PORT || 5000, () => {
   connectDB();
