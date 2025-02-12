@@ -11,7 +11,17 @@ const app = express();
 // ✅ Ensure JSON middleware is after CORS setup
 app.use(express.json());
 // ✅ Enable CORS for all origins
-// app.use(cors());
+app.use(
+  cors({
+    origin: [
+      process.env.FRONTEND_URL// Allow deployed frontend
+    ],
+    methods: "GET, POST, PUT, DELETE, OPTIONS",
+    allowedHeaders: "Content-Type, Authorization",
+    credentials: true // If using authentication tokens
+  })
+);
+
 
 // ✅ Debugging middleware to log requests
 app.use((req, res, next) => {
