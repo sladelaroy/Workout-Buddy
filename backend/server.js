@@ -22,7 +22,6 @@ app.use(
   })
 );
 
-
 // ✅ Debugging middleware to log requests
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", process.env.FRONTEND_URL); // Change to your frontend URL
@@ -35,6 +34,7 @@ app.use((req, res, next) => {
   console.log(req.path, req.method);
   next();
 });
+
 
 // ✅ Routes
 app.use("/api/workouts", workoutRoutes);
