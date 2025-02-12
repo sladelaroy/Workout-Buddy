@@ -11,7 +11,7 @@ const app = express();
 // ✅ Ensure JSON middleware is after CORS setup
 app.use(express.json());
 // ✅ Enable CORS for all origins
-app.use(cors());
+// app.use(cors());
 
 // ✅ Debugging middleware to log requests
 app.use((req, res, next) => {
