@@ -1,60 +1,59 @@
 import express from "express";
 import dotenv from "dotenv";
-import { connectDB } from "./config/db.js";
 import cors from "cors";
+import { connectDB } from "./config/db.js";
 import workoutRoutes from "./routes/workouts.js";
 import userRoutes from "./routes/users.js";
 
+// ✅ Load environment variables early
 dotenv.config();
 
+// ✅ Connect to the database BEFORE starting the server
+connectDB();
+
+// ✅ Initialize Express app
 const app = express();
-// ✅ Ensure JSON middleware is after CORS setup
-app.use(express.json());
 
-// ✅ Debugging middleware to log requests
-app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "*"); // Change to your frontend URL
-  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
-
-  if (req.method === "OPTIONS") {
-    return res.sendStatus(200); // Handle preflight requests
-  }
-  console.log(req.path, req.method);
-  next();
-});
-
+// ✅ Enable CORS
 app.use(
   cors({
-    origin: [
-      "*" // Allow deployed frontend
-    ],
+    origin: process.env.FRONTEND_URL, // Allow requests from frontend
     methods: "GET, POST, PUT, DELETE, OPTIONS",
     allowedHeaders: "Content-Type, Authorization",
-    credentials: true // If using authentication tokens
+    credentials: true
   })
 );
+
+// ✅ Middleware (placed correctly)
+app.use(express.json()); // Parse JSON request bodies
+app.use(express.urlencoded({ extended: true })); // Parse URL-encoded data
+
+// ✅ Preflight Request Handling
+app.options("*", cors());
+
+// ✅ Debugging Middleware (logs incoming requests)
+app.use((req, res, next) => {
+  console.log(`${req.method} ${req.path}`);
+  next();
+});
 
 // ✅ Routes
 app.use("/api/workouts", workoutRoutes);
 app.use("/api/users", userRoutes);
 
+// ✅ Root Route (for sanity check)
 app.get("/", (req, res) => {
   res.send("<h1>Server is working! 🎉</h1>");
 });
 
-// ✅ Global error handler (prevents crashes without CORS headers)
+// ✅ Global Error Handler (prevents server crashes)
 app.use((err, req, res, next) => {
-  console.error(err.stack);
+  console.error("Error:", err.message);
   res.status(500).json({ message: "Server Error" });
 });
 
-app.options("*", cors());
-
-// ✅ Start server
-app.listen(process.env.PORT || 5000, () => {
-  connectDB();
-  console.log(
-    `Server is running on http://localhost:${process.env.PORT || 5000}`
-  );
+// ✅ Start Server
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on http://localhost:${PORT}`);
 });
