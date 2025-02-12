@@ -10,21 +10,10 @@ dotenv.config();
 const app = express();
 // ✅ Ensure JSON middleware is after CORS setup
 app.use(express.json());
-// ✅ Enable CORS for all origins
-app.use(
-  cors({
-    origin: [
-      process.env.FRONTEND_URL// Allow deployed frontend
-    ],
-    methods: "GET, POST, PUT, DELETE, OPTIONS",
-    allowedHeaders: "Content-Type, Authorization",
-    credentials: true // If using authentication tokens
-  })
-);
 
 // ✅ Debugging middleware to log requests
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", process.env.FRONTEND_URL); // Change to your frontend URL
+  res.header("Access-Control-Allow-Origin", "*"); // Change to your frontend URL
   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
   res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
 
@@ -35,6 +24,16 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use(
+  cors({
+    origin: [
+      "*" // Allow deployed frontend
+    ],
+    methods: "GET, POST, PUT, DELETE, OPTIONS",
+    allowedHeaders: "Content-Type, Authorization",
+    credentials: true // If using authentication tokens
+  })
+);
 
 // ✅ Routes
 app.use("/api/workouts", workoutRoutes);
